@@ -17,7 +17,7 @@ const Countries = () => {
 
   return (
     <>
-      <section className="grid">
+      <section className="countries">
         {countries.map((country) => {
           const {
             flag,
@@ -29,8 +29,10 @@ const Countries = () => {
           } = country;
 
           return (
-            <article key={callingcode}>
-              <img src={flag} alt={name} />
+            <div className="country" key={callingcode}>
+              <div className="flag">
+                <img src={flag} alt={name} />
+              </div>
               <div className="details">
                 <h3>
                   <span>{name}</span>
@@ -45,7 +47,7 @@ const Countries = () => {
                   Capital: <span>{capital}</span>
                 </h4>
               </div>
-            </article>
+            </div>
           );
         })}
       </section>
