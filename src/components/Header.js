@@ -6,7 +6,7 @@ export default function Header() {
       <>
           <header className='header'>
               <h1>Where in the world?</h1>
-              <div>
+              <div className='mode'>
                   <LightModeIcon/><p>Light mode</p>
               </div>
           </header>
