@@ -1,17 +1,21 @@
-import React from 'react'
+import React from "react";
 
-export default function Filter() {
+export default function Filter({ lightMode }) {
   return (
     <section className="filter">
-        <form className="form-control">
-          <input
-            type="search"
-            name="search"
-            id="search"
-            placeholder="Search for a country"
-          />
-        </form>
-      <div name="select" id="select" className="region-filter">
+      <form className={`form-control ${lightMode ? "lightMode" : ""}`}>
+        <input
+          type="search"
+          name="search"
+          id="search"
+          placeholder="Search for a country"
+        />
+      </form>
+      <div
+        name="select"
+        id="select"
+        className={`region-filter ${lightMode ? "lightMode" : ""}`}
+      >
         <select name="select" id="select">
           <option value="Filter by region">Filter by region</option>
           <option value="Africa">Africa</option>
