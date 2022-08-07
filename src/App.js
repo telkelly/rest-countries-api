@@ -20,8 +20,7 @@ export default function App() {
     } catch (error) {
       console.log(error);
     }
-    console.log(countries);
-  });
+  }, []);
 
   const fetchData = async () => {
     const response = await fetch("https://restcountries.com/v2/all");
@@ -30,7 +29,7 @@ export default function App() {
     setCountries(data);
   };
 
-  
+  console.log(countries);
 
   return (
     <div className={`app ${lightMode ? "lightMode" : ""}`}>
@@ -41,9 +40,19 @@ export default function App() {
         <Route
           path="/"
           element={
-            <div>
+            <div className="grid-country">
               {countries.map((country) => {
-                <Country />;
+                return (
+                  <Country
+                    key={country.alpha3Code}
+                    code={country.alpha2Code}
+                    name={country.name}
+                    capital={country.capital}
+                    population={country.population}
+                    region={country.region}
+                    flag={country.flag}
+                  />
+                );
               })}
             </div>
           }

@@ -1,7 +1,7 @@
 import React from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
-function CountryDetail({ lightMode }) {
+function CountryDetail({ lightMode}) {
   return (
     <div className="country-detail">
       <button className={`btn-back ${lightMode ? "lightMode" : ""}`}>
