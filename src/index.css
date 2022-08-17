@@ -84,6 +84,7 @@ img {
 
 .filter .form-control input {
   background-color: var(--dark-mode-elements);
+  color: white;
   border: none;
   outline: none;
   padding: 15px;

@@ -1,14 +1,15 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Route, Routes } from "react-router-dom";
 import Country from "./components/Country";
-import Filter from "./components/Filter";
 import Header from "./components/Header";
 import CountryDetail from "./components/CountryDetail";
 
 export default function App() {
   const [lightMode, setLightMode] = useState(false);
   const [countries, setCountries] = useState([]);
+  const countryInputRef = useRef();
+  const continentRef = useRef();
 
   const switchMode = () => {
     setLightMode((prevState) => !prevState);
@@ -29,13 +30,59 @@ export default function App() {
     setCountries(data);
   };
 
-  console.log(countries);
+  
+
+  const searchCountry = () => {
+    const searchValue = countryInputRef.current.value;
+
+    if (searchValue.trim()) {
+      const fetchSearch = async () => {
+        const response = await fetch(`https://restcountries.com/v2/name/${searchValue}`);
+        const data = await response.json();
+
+        setCountries(data);
+      };
+
+      try {
+        fetchSearch();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      fetchData();
+    }
+    console.log(setCountries);
+  };
 
   return (
     <div className={`app ${lightMode ? "lightMode" : ""}`}>
       <Header onClick={switchMode} lightMode={lightMode} />
-      <Filter lightMode={lightMode} />
-
+      <section className="filter">
+        <form className={`form-control ${lightMode ? "lightMode" : ""}`}>
+          <input
+            ref={countryInputRef}
+            onChange={searchCountry}
+            type="search"
+            name="search"
+            id="search"
+            placeholder="Search for a country"
+          />
+        </form>
+        <div
+          name="select"
+          id="select"
+          className={`region-filter ${lightMode ? "lightMode" : ""}`}
+        >
+          <select ref={continentRef} name="select" id="select">
+            <option value="Filter by region">Filter by region</option>
+            <option value="Africa">Africa</option>
+            <option value="America">America</option>
+            <option value="Asia">Asia</option>
+            <option value="Europe">Europe</option>
+            <option value="Oceania">Oceania</option>
+          </select>
+        </div>
+      </section>
       <Routes>
         <Route
           path="/"
