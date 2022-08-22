@@ -11,6 +11,8 @@ export default function App() {
   const countryInputRef = useRef();
   const continentRef = useRef();
 
+  const noCountries = countries.status || countries.message;
+
   const switchMode = () => {
     setLightMode((prevState) => !prevState);
   };
@@ -27,17 +29,22 @@ export default function App() {
     const response = await fetch("https://restcountries.com/v2/all");
     const data = await response.json();
 
+    if (data.status === 404) {
+      setCountries([]);
+      return;
+    }
+
     setCountries(data);
   };
-
-  
 
   const searchCountry = () => {
     const searchValue = countryInputRef.current.value;
 
     if (searchValue.trim()) {
       const fetchSearch = async () => {
-        const response = await fetch(`https://restcountries.com/v2/name/${searchValue}`);
+        const response = await fetch(
+          `https://restcountries.com/v2/name/${searchValue}`
+        );
         const data = await response.json();
 
         setCountries(data);
@@ -52,6 +59,36 @@ export default function App() {
       fetchData();
     }
     console.log(setCountries);
+  };
+
+  const selectContinent = () => {
+    const selectValue = continentRef.current.value;
+
+    if (selectValue.trim()) {
+      const fetchSelect = async () => {
+        const response = await fetch(
+          `https://restcountries.com/v2/region/${selectValue}`
+        );
+        const data = await response.json();
+
+        if (selectValue === "All") {
+          try {
+            fetchData();
+          } catch (error) {
+            console.log(error);
+          }
+          return;
+        }
+
+        setCountries(data);
+      };
+
+      try {
+        fetchSelect();
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   return (
@@ -73,10 +110,15 @@ export default function App() {
           id="select"
           className={`region-filter ${lightMode ? "lightMode" : ""}`}
         >
-          <select ref={continentRef} name="select" id="select">
-            <option value="Filter by region">Filter by region</option>
+          <select
+            ref={continentRef}
+            onChange={selectContinent}
+            name="select"
+            id="select"
+          >
+            <option value="All">Filter by region</option>
             <option value="Africa">Africa</option>
-            <option value="America">America</option>
+            <option value="Americas">America</option>
             <option value="Asia">Asia</option>
             <option value="Europe">Europe</option>
             <option value="Oceania">Oceania</option>
@@ -88,19 +130,24 @@ export default function App() {
           path="/"
           element={
             <div className="grid-country">
-              {countries.map((country) => {
-                return (
-                  <Country
-                    key={country.alpha3Code}
-                    code={country.alpha2Code}
-                    name={country.name}
-                    capital={country.capital}
-                    population={country.population}
-                    region={country.region}
-                    flag={country.flag}
-                  />
-                );
-              })}
+              {!noCountries ? (
+                countries.map((country) => {
+                  return (
+                    <Country
+                      key={country.alpha3Code}
+                      code={country.alpha2Code}
+                      name={country.name}
+                      capital={country.capital}
+                      population={country.population}
+                      region={country.region}
+                      flag={country.flag}
+                      lightMode={lightMode}
+                    />
+                  );
+                })
+              ) : (
+                <p>No countries found...</p>
+              )}
             </div>
           }
         />

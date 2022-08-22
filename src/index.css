@@ -106,6 +106,10 @@ img {
   color: var(--dark-mode-bg);
 }
 
+.form-control.lightMode input{
+  color: var(--dark-mode-bg);
+}
+
 .filter .region-filter {
   width: 100%;
 }
@@ -157,7 +161,7 @@ img {
 }
 
 .country.lightMode{
-  background-color: var(--light-mode-elements);
+  background-color: white;
 }
 
 .country .flag {
@@ -174,13 +178,12 @@ img {
 }
 
 .details {
-  background-color: var(--dark-mode-elements);
   padding: 20px;
   border-radius: 0 0 5px 5px;
 }
 
 .details.lightMode{
-  background-color: var(--light-mode-elements);
+  background-color: white;
 }
 
 

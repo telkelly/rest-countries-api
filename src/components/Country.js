@@ -1,8 +1,8 @@
 
-const Country = ({ lightMode, flag, name, population, region, capital }) => {
+export default function Country({ flag, name, population, region, capital, lightMode }) {
   return (
     <section className="countries">
-      <div className={`country ${lightMode ? "lightMode" : ""}`} key="">
+      <div className={`country ${lightMode ? "lightMode" : ""}`}>
         <div className="flag">
           <img src={flag} alt="" />
         </div>
@@ -25,4 +25,3 @@ const Country = ({ lightMode, flag, name, population, region, capital }) => {
   );
 };
 
-export default Country;
