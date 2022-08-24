@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Country from "./components/Country";
 import Header from "./components/Header";
 import CountryDetail from "./components/CountryDetail";
@@ -10,6 +10,7 @@ export default function App() {
   const [countries, setCountries] = useState([]);
   const countryInputRef = useRef();
   const continentRef = useRef();
+  const navigate = useNavigate();
 
   const noCountries = countries.status || countries.message;
 
@@ -91,6 +92,10 @@ export default function App() {
     }
   };
 
+  const showDetails = (code) => {
+    navigate(`/${code}`)
+  };
+
   return (
     <div className={`app ${lightMode ? "lightMode" : ""}`}>
       <Header onClick={switchMode} lightMode={lightMode} />
@@ -142,6 +147,7 @@ export default function App() {
                       region={country.region}
                       flag={country.flag}
                       lightMode={lightMode}
+                      showDetails={showDetails}
                     />
                   );
                 })
@@ -152,8 +158,8 @@ export default function App() {
           }
         />
         <Route
-          path="country-detail"
-          element={<CountryDetail lightMode={lightMode} />}
+          path="/:countryCode"
+          element={<CountryDetail lightMode={lightMode} countries={countries} />}
         />
       </Routes>
     </div>

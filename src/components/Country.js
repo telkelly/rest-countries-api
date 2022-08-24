@@ -1,8 +1,23 @@
+export default function Country({
+  flag,
+  name,
+  population,
+  region,
+  capital,
+  lightMode,
+  showDetails,
+  code
+}) {
+  const showDetailsHandler = () => {
+    showDetails(code);
+  };
 
-export default function Country({ flag, name, population, region, capital, lightMode }) {
   return (
     <section className="countries">
-      <div className={`country ${lightMode ? "lightMode" : ""}`}>
+      <div
+        className={`country ${lightMode ? "lightMode" : ""}`}
+        onClick={showDetailsHandler}
+      >
         <div className="flag">
           <img src={flag} alt="" />
         </div>
@@ -23,5 +38,4 @@ export default function Country({ flag, name, population, region, capital, light
       </div>
     </section>
   );
-};
-
+}
