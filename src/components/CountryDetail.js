@@ -1,8 +1,8 @@
 import React from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from "react-router-dom";
 
-function CountryDetail({ lightMode, countries}) {
+function CountryDetail({ lightMode, countries }) {
   const params = useParams();
   const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ function CountryDetail({ lightMode, countries}) {
   let languages = [];
   let borders = [];
 
-  countries.forEach(country => {
+  countries.forEach((country) => {
     if (country.alpha2Code === params.countryCode) {
       name = country.name;
       flagImg = country.flag;
@@ -29,28 +29,29 @@ function CountryDetail({ lightMode, countries}) {
       capital = country.capital;
       topLevelDomain = country.topLevelDomain;
 
-      country.currencies.forEach(currency => {
-        currencies.push(currency.name)
-      })
+      country.currencies?.forEach((currency) => {
+        currencies.push(currency.name);
+      });
 
-      country.languages.forEach((language) => {
+      country.languages?.forEach((language) => {
         languages.push(language.name);
+      });
+
+      country.borders?.forEach((border) => {
+        borders.push(border);
       });
     }
   });
 
   const goBack = () => {
-    navigate('/');
-  }
+    navigate("/");
+  };
 
   return (
     <div className="country-detail">
       <div className="country-detail-body">
         <div className="img-container">
-          <img
-            src={flagImg}
-            alt=""
-          />
+          <img src={flagImg} alt="" />
         </div>
         <div className="info">
           <h3>{name}</h3>
@@ -74,7 +75,11 @@ function CountryDetail({ lightMode, countries}) {
               </p>
               <p>
                 Capital:
-                <span className="value">{capital}</span>
+                {capital !== null ? (
+                  <span className="value">{capital}</span>
+                ) : (
+                  <span className="value">No</span>
+                )}
               </p>
             </div>
             <div className="right-info">
@@ -84,35 +89,73 @@ function CountryDetail({ lightMode, countries}) {
               </p>
               <p>
                 Currencies:
-                <span className="value">{currencies}</span>
+                {currencies.length ? (
+                  currencies.map((currency) => {
+                    if (
+                      currencies.indexOf(currency) !==
+                      currencies.length - 1
+                    ) {
+                      return (
+                        <span className="value">
+                          {""}
+                          {currencies},
+                        </span>
+                      );
+                    } else {
+                      return (
+                        <span className="value">
+                          {""}
+                          {currencies}
+                        </span>
+                      );
+                    }
+                  })
+                ) : (
+                  <span className="value">No</span>
+                )}
               </p>
               <p>
                 Languages:
-                <span className="value">{languages}</span>
+                {languages.map((language) => {
+                  if (languages.indexOf(language) !== languages.length - 1) {
+                    return (
+                      <span key={language} className="value">
+                        {""}
+                        {language},
+                      </span>
+                    );
+                  } else {
+                    return (
+                      <span key={language} className="value">
+                        {""}
+                        {language}
+                      </span>
+                    );
+                  }
+                })}
               </p>
             </div>
           </div>
           <h4 className="border-title">Border Countries:</h4>
           <div className="border-countries">
-            <button
-              className={`border-country ${lightMode ? "lightMode" : ""}`}
-            >
-              t
-            </button>
-            <button
-              className={`border-country ${lightMode ? "lightMode" : ""}`}
-            >
-              t
-            </button>
-            <button
-              className={`border-country ${lightMode ? "lightMode" : ""}`}
-            >
-              t
-            </button>
+            {borders.length ? (
+              borders.map((border) => (
+                <span
+                  className={`border-country ${lightMode ? "lightMode" : ""}`}
+                >
+                  {border}
+                </span>
+              ))
+            ) : (
+              <p>No borders...</p>
+            )}
           </div>
         </div>
       </div>
-      <button className={`btn-back ${lightMode ? "lightMode" : ""}`} onClick={goBack}>
+      <button
+        className={`btn-back ${lightMode ? "lightMode" : ""}`}
+        onClick={goBack}
+      >
         <KeyboardBackspaceIcon /> <p>Back</p>
       </button>
     </div>
