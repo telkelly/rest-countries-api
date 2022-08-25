@@ -316,7 +316,16 @@ img {
   
   .country-detail-body {
     flex-direction: column;
+    padding: 45px;
   }
+  
+  .img-container{
+    width: 100%;
+  }
+
+  .info {
+    width: 100%;
+}
 
   .info-container {
     flex-direction: column;
