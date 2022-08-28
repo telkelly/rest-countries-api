@@ -8,8 +8,10 @@ import CountryDetail from "./components/CountryDetail";
 export default function App() {
   const [lightMode, setLightMode] = useState(false);
   const [countries, setCountries] = useState([]);
+  const [hideFilter, setHideFilter] = useState(false);
   const countryInputRef = useRef();
   const continentRef = useRef();
+  const hideBox = useRef();
   const navigate = useNavigate();
 
   const noCountries = countries.status || countries.message;
@@ -17,6 +19,15 @@ export default function App() {
   const switchMode = () => {
     setLightMode((prevState) => !prevState);
   };
+
+  const hidding = (props) => {
+    if (props === "back") {
+      setHideFilter(false);
+    } else {
+      setHideFilter(true);
+    }
+  };
+
 
   useEffect(() => {
     try {
@@ -93,13 +104,13 @@ export default function App() {
   };
 
   const showDetails = (code) => {
-    navigate(`/${code}`)
+    navigate(`/${code}`);
   };
 
   return (
     <div className={`app ${lightMode ? "lightMode" : ""}`}>
       <Header onClick={switchMode} lightMode={lightMode} />
-      <section className="filter">
+      <section className={`filter ${hideFilter ? "remove-filter" : ""}`}>
         <form className={`form-control ${lightMode ? "lightMode" : ""}`}>
           <input
             ref={countryInputRef}
@@ -134,7 +145,7 @@ export default function App() {
         <Route
           path="/"
           element={
-            <div className="grid-country">
+            <div className="grid-country" ref={hideBox}>
               {!noCountries ? (
                 countries.map((country) => {
                   return (
@@ -148,6 +159,7 @@ export default function App() {
                       flag={country.flag}
                       lightMode={lightMode}
                       showDetails={showDetails}
+                      onClick={hidding}
                     />
                   );
                 })
@@ -159,7 +171,9 @@ export default function App() {
         />
         <Route
           path="/:countryCode"
-          element={<CountryDetail lightMode={lightMode} countries={countries} />}
+          element={
+            <CountryDetail hidding={hidding} lightMode={lightMode} countries={countries} />
+          }
         />
       </Routes>
     </div>

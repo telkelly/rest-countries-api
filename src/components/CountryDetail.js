@@ -2,7 +2,7 @@ import React from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { useParams, useNavigate } from "react-router-dom";
 
-function CountryDetail({ lightMode, countries }) {
+function CountryDetail({ lightMode, countries,  hidding}) {
   const params = useParams();
   const navigate = useNavigate();
 
@@ -45,10 +45,17 @@ function CountryDetail({ lightMode, countries }) {
 
   const goBack = () => {
     navigate("/");
+    hidding('back');
   };
 
   return (
     <div className="country-detail">
+      <button
+        className={`btn-back ${lightMode ? "lightMode" : ""}`}
+        onClick={goBack}
+      >
+        <KeyboardBackspaceIcon /> <p>Back</p>
+      </button>
       <div className="country-detail-body">
         <div className="img-container">
           <img src={flagImg} alt="" />
@@ -152,12 +159,6 @@ function CountryDetail({ lightMode, countries }) {
           </div>
         </div>
       </div>
-      <button
-        className={`btn-back ${lightMode ? "lightMode" : ""}`}
-        onClick={goBack}
-      >
-        <KeyboardBackspaceIcon /> <p>Back</p>
-      </button>
     </div>
   );
 }

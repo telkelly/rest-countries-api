@@ -1,4 +1,5 @@
 export default function Country({
+  onClick,
   flag,
   name,
   population,
@@ -8,18 +9,19 @@ export default function Country({
   showDetails,
   code
 }) {
+  
   const showDetailsHandler = () => {
     showDetails(code);
   };
 
   return (
-    <section className="countries">
+    <section className="countries" onClick={onClick}>
       <div
         className={`country ${lightMode ? "lightMode" : ""}`}
         onClick={showDetailsHandler}
       >
         <div className="flag">
-          <img src={flag} alt="" />
+          <img src={flag} alt={flag} />
         </div>
         <div className={`details ${lightMode ? "lightMode" : ""}`}>
           <h3>

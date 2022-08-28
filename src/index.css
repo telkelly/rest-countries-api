@@ -72,6 +72,10 @@ img {
   flex-direction: column;
 }
 
+.filter.remove-filter{
+  display: none;
+}
+
 .filter .form-control {
   width: 100%;
   margin-bottom: 30px;
@@ -156,8 +160,8 @@ img {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
   background-color: var(--dark-mode-elements);
   height: 340px;
-  cursor: pointer;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .country.lightMode{
@@ -219,7 +223,7 @@ img {
 }
 
 .btn-back{
-  margin-left: 15px;
+  margin: 15px 0 0 15px;
 }
 
 .btn-back.lightMode{
