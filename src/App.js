@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Country from "./components/Country";
 import Header from "./components/Header";
@@ -14,168 +13,153 @@ export default function App() {
   const hideBox = useRef();
   const navigate = useNavigate();
 
-  const noCountries = countries.status || countries.message;
+  const switchMode = () => setLightMode(prev => !prev);
 
-  const switchMode = () => {
-    setLightMode((prevState) => !prevState);
-  };
-
-  const hidding = (props) => {
-    if (props === "back") {
-      setHideFilter(false);
-    } else {
-      setHideFilter(true);
-    }
-  };
-
+  const hidding = (action) => setHideFilter(action !== "back");
 
   useEffect(() => {
-    try {
-      fetchData();
-    } catch (error) {
-      console.log(error);
-    }
+    fetchData();
   }, []);
 
   const fetchData = async () => {
-    const response = await fetch("https://restcountries.com/v2/all");
-    const data = await response.json();
+    try {
+      const response = await fetch(
+          "https://restcountries.com/v3.1/all?fields=name,capital,flags,population,region,cca2,cca3"
+      );
+      const data = await response.json();
 
-    if (data.status === 404) {
-      setCountries([]);
-      return;
+      if (data.status === 404) {
+        setCountries([]);
+        return;
+      }
+
+      setCountries(data);
+    } catch (error) {
+      console.error("Error fetching all countries:", error);
     }
-
-    setCountries(data);
   };
 
   const searchCountry = () => {
-    const searchValue = countryInputRef.current.value;
+    const searchValue = countryInputRef.current.value.trim();
 
-    if (searchValue.trim()) {
+    if (searchValue) {
       const fetchSearch = async () => {
-        const response = await fetch(
-          `https://restcountries.com/v2/name/${searchValue}`
-        );
-        const data = await response.json();
-
-        setCountries(data);
+        try {
+          const response = await fetch(
+              `https://restcountries.com/v3.1/name/${searchValue}?fields=name,capital,flags,population,region,cca2,cca3`
+          );
+          const data = await response.json();
+          setCountries(data);
+        } catch (error) {
+          console.error("Error searching countries:", error);
+        }
       };
 
-      try {
-        fetchSearch();
-      } catch (error) {
-        console.log(error);
-      }
+      fetchSearch();
     } else {
       fetchData();
     }
-    console.log(setCountries);
   };
 
   const selectContinent = () => {
-    const selectValue = continentRef.current.value;
+    const region = continentRef.current.value;
 
-    if (selectValue.trim()) {
-      const fetchSelect = async () => {
+    if (region === "All") {
+      fetchData();
+      return;
+    }
+
+    const fetchByRegion = async () => {
+      try {
         const response = await fetch(
-          `https://restcountries.com/v2/region/${selectValue}`
+            `https://restcountries.com/v3.1/region/${region}?fields=name,capital,flags,population,region,cca2,cca3`
         );
         const data = await response.json();
-
-        if (selectValue === "All") {
-          try {
-            fetchData();
-          } catch (error) {
-            console.log(error);
-          }
-          return;
-        }
-
         setCountries(data);
-      };
-
-      try {
-        fetchSelect();
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching by region:", error);
       }
-    }
+    };
+
+    fetchByRegion();
   };
 
   const showDetails = (code) => {
     navigate(`/${code}`);
   };
 
+  const noCountries = countries.status || countries.message;
+
   return (
-    <div className={`app ${lightMode ? "lightMode" : ""}`}>
-      <Header onClick={switchMode} lightMode={lightMode} />
-      <section className={`filter ${hideFilter ? "remove-filter" : ""}`}>
-        <form className={`form-control ${lightMode ? "lightMode" : ""}`}>
-          <input
-            ref={countryInputRef}
-            onChange={searchCountry}
-            type="search"
-            name="search"
-            id="search"
-            placeholder="Search for a country"
+      <div className={`app ${lightMode ? "lightMode" : ""}`}>
+        <Header onClick={switchMode} lightMode={lightMode} />
+
+        <section className={`filter ${hideFilter ? "remove-filter" : ""}`}>
+          <form className={`form-control ${lightMode ? "lightMode" : ""}`}>
+            <input
+                ref={countryInputRef}
+                onChange={searchCountry}
+                type="search"
+                name="search"
+                id="search"
+                placeholder="Search for a country"
+            />
+          </form>
+
+          <div className={`region-filter ${lightMode ? "lightMode" : ""}`}>
+            <select
+                ref={continentRef}
+                onChange={selectContinent}
+                name="select"
+                id="select"
+            >
+              <option value="All">Filter by region</option>
+              <option value="Africa">Africa</option>
+              <option value="Americas">America</option>
+              <option value="Asia">Asia</option>
+              <option value="Europe">Europe</option>
+              <option value="Oceania">Oceania</option>
+            </select>
+          </div>
+        </section>
+
+        <Routes>
+          <Route
+              path="/"
+              element={
+                <div className="grid-country" ref={hideBox}>
+                  {!noCountries ? (
+                      countries.map((country) => (
+                          <Country
+                              key={country.cca3}
+                              code={country.cca2}
+                              name={country.name.common}
+                              capital={country.capital}
+                              population={country.population}
+                              region={country.region}
+                              flag={country.flags?.png}
+                              lightMode={lightMode}
+                              showDetails={showDetails}
+                              onClick={hidding}
+                          />
+                      ))
+                  ) : (
+                      <p>No countries found...</p>
+                  )}
+                </div>
+              }
           />
-        </form>
-        <div
-          name="select"
-          id="select"
-          className={`region-filter ${lightMode ? "lightMode" : ""}`}
-        >
-          <select
-            ref={continentRef}
-            onChange={selectContinent}
-            name="select"
-            id="select"
-          >
-            <option value="All">Filter by region</option>
-            <option value="Africa">Africa</option>
-            <option value="Americas">America</option>
-            <option value="Asia">Asia</option>
-            <option value="Europe">Europe</option>
-            <option value="Oceania">Oceania</option>
-          </select>
-        </div>
-      </section>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div className="grid-country" ref={hideBox}>
-              {!noCountries ? (
-                countries.map((country) => {
-                  return (
-                    <Country
-                      key={country.alpha3Code}
-                      code={country.alpha2Code}
-                      name={country.name}
-                      capital={country.capital}
-                      population={country.population}
-                      region={country.region}
-                      flag={country.flag}
-                      lightMode={lightMode}
-                      showDetails={showDetails}
-                      onClick={hidding}
-                    />
-                  );
-                })
-              ) : (
-                <p>No countries found...</p>
-              )}
-            </div>
-          }
-        />
-        <Route
-          path="/:countryCode"
-          element={
-            <CountryDetail hidding={hidding} lightMode={lightMode} countries={countries} />
-          }
-        />
-      </Routes>
-    </div>
+          <Route
+              path="/:countryCode"
+              element={
+                <CountryDetail
+                    hidding={hidding}
+                    lightMode={lightMode}
+                    countries={countries}
+                />
+              }
+          />
+        </Routes>
+      </div>
   );
 }
